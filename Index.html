@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistem Silsilah Keluarga Besar</title>
+  
+  <!-- Modern Font & Tailwind CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- SweetAlert2 untuk Premium UI Feedback -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { bg: '#0f1117', card: '#1a1d29', border: '#2a2d3d', accent: '#06b6d4' }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body { background-color: #0f1117; color: #f3f4f6; }
+    /* Glassmorphism Effect */
+    .glass-panel {
+      background: rgba(26, 29, 41, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(6, 182, 212, 0.1);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    }
+    /* Premium Input Styling */
+    .input-premium {
+      width: 100%; background: #0f1117; color: white;
+      border: 1px solid #2a2d3d; border-radius: 0.75rem;
+      padding: 0.875rem 1rem; transition: all 0.3s ease;
+    }
+    .input-premium:focus {
+      outline: none; border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #2a2d3d; border-radius: 4px; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-brand-accent selection:text-white">
+
+  <!-- Minimalist Navbar -->
+  <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-brand-accent flex items-center justify-center font-bold text-brand-bg text-xl shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+        S
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">Silsilah<span class="text-brand-accent">Gorontalo</span></h1>
+        <p class="text-[10px] text-gray-400 uppercase tracking-widest">Enterprise System</p>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl">
+    
+    <!-- Hero Section -->
+    <header class="mb-10 lg:mb-14 text-center lg:text-left lg:max-w-2xl">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Rajut Kembali<br>Jejak Leluhur Anda.</h2>
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed">Sistem terpusat dengan AI-driven anomaly detection. Memastikan tidak ada duplikasi data pada marga yang sama dalam satu pohon silsilah.</p>
+    </header>
+
+    <!-- Bento Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 align-start">
+      
+      <!-- Kiri: Form Silsilah (Span 8 di Desktop) -->
+      <section class="lg:col-span-8 glass-panel rounded-3xl p-6 md:p-10 relative overflow-hidden">
+        <!-- Dekorasi Background -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+        
+        <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Registrasi Anggota Baru
+        </h3>
+
+        <form id="formSilsilah" onsubmit="handleProsesData(event)" class="space-y-6">
+          <!-- Grid 2 Kolom untuk Input -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5 ml-1 uppercase">Nama Lengkap</label>
+                <input type="text" id="inpNama" required class="input-premium" placeholder="Cth: Nani Wartabone">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5 ml-1 uppercase">Marga Gorontalo</label>
+                <select id="inpMarga" required class="input-premium appearance-none bg-brand-bg">
+                  <option value="" disabled selected>Pilih Marga dari sistem...</option>
+                  <!-- Render List Marga dari Server -->
+                  <? for (let i = 0; i < margaList.length; i++) { ?>
+                    <option value="<?= margaList[i] ?>"><?= margaList[i] ?></option>
+                  <? } ?>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5 ml-1 uppercase">Tahun Lahir (Wajib)</label>
+                <input type="number" id="inpTahun" required min="1800" max="2026" class="input-premium" placeholder="YYYY">
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5 ml-1 uppercase">Nama Ayah</label>
+                <input type="text" id="inpAyah" required class="input-premium" placeholder="Nama Lengkap Ayah">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1.5 ml-1 uppercase">Nama Ibu</label>
+                <input type="text" id="inpIbu" required class="input-premium" placeholder="Nama Lengkap Ibu">
+              </div>
+            </div>
+
+          </div> <!-- End Grid Input Utama -->
+
+          <!-- Garis Pemisah Visual -->
+          <hr class="border-brand-border my-6">
+
+          <!-- Section Kakek & Nenek -->
+          <div>
+            <h4 class="text-sm font-semibold text-brand-accent mb-4">Hierarki Leluhur (Opsional)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-brand-bg/50 p-4 rounded-2xl border border-brand-border/50 space-y-3">
+                <span class="text-xs text-gray-500 font-bold bg-gray-800 px-2 py-1 rounded-md">Jalur Ayah</span>
+                <input type="text" id="inpKakekAyah" class="input-premium text-sm" placeholder="Kakek (Ayah dari Ayah)">
+                <input type="text" id="inpNenekAyah" class="input-premium text-sm" placeholder="Nenek (Ibu dari Ayah)">
+              </div>
+              <div class="bg-brand-bg/50 p-4 rounded-2xl border border-brand-border/50 space-y-3">
+                <span class="text-xs text-gray-500 font-bold bg-gray-800 px-2 py-1 rounded-md">Jalur Ibu</span>
+                <input type="text" id="inpKakekIbu" class="input-premium text-sm" placeholder="Kakek (Ayah dari Ibu)">
+                <input type="text" id="inpNenekIbu" class="input-premium text-sm" placeholder="Nenek (Ibu dari Ibu)">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full md:w-auto mt-6 px-8 py-3.5 bg-brand-accent hover:bg-cyan-400 text-brand-bg font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transform hover:-translate-y-0.5">
+            Integrasikan Data ke Sistem
+          </button>
+        </form>
+      </section>
+
+      <!-- Kanan: Dashboard Stats (Span 4 di Desktop) -->
+      <aside class="lg:col-span-4 flex flex-col gap-6">
+        
+        <!-- Stats Card -->
+        <div class="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden group">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-brand-accent/10 rounded-full blur-xl group-hover:bg-brand-accent/20 transition-all"></div>
+          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Total Anggota Silsilah</h3>
+          <div class="text-5xl md:text-6xl font-black text-white" id="statTotal">
+            <span class="animate-pulse">--</span>
+          </div>
+          <p class="text-xs text-brand-accent mt-3 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span> Database tersinkronisasi
+          </p>
+        </div>
+
+        <!-- Info Sistem Card -->
+        <div class="glass-panel rounded-3xl p-6 md:p-8 flex-grow">
+          <h3 class="text-lg font-semibold mb-4 text-white">Protokol Keamanan Data</h3>
+          <ul class="space-y-4 text-sm text-gray-400">
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-brand-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>Penolakan otomatis jika Nama, Marga, dan Tahun Lahir identik.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-brand-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <span>Setiap individu diberi UUID unik untuk menghindari tumpang tindih data leluhur.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-brand-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              <span>Pengelompokan otomatis menjadi 1 Pohon Silsilah jika marga cocok.</span>
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <footer class="py-8 text-center text-xs text-gray-600 mt-auto border-t border-brand-border">
+    &copy; 2026 Arsitektur Pengembangan Silsilah Enterprise Gorontalo.
+  </footer>
+
+  <script>
+    // Muat data dashboard saat UI pertama kali dirender
+    document.addEventListener("DOMContentLoaded", loadDashboardStats);
+
+    function loadDashboardStats() {
+      google.script.run.withSuccessHandler(function(data) {
+        document.getElementById('statTotal').innerText = data.total;
+      }).fetchDashboardStats();
+    }
+
+    function handleProsesData(e) {
+      e.preventDefault();
+      
+      const payload = {
+        nama: document.getElementById('inpNama').value.trim(),
+        marga: document.getElementById('inpMarga').value,
+        tahun: document.getElementById('inpTahun').value.trim(),
+        ayah: document.getElementById('inpAyah').value.trim(),
+        ibu: document.getElementById('inpIbu').value.trim(),
+        kakekAyah: document.getElementById('inpKakekAyah').value.trim(),
+        nenekAyah: document.getElementById('inpNenekAyah').value.trim(),
+        kakekIbu: document.getElementById('inpKakekIbu').value.trim(),
+        nenekIbu: document.getElementById('inpNenekIbu').value.trim()
+      };
+
+      Swal.fire({
+        title: 'Verifikasi Anomali',
+        text: 'Sistem sedang memindai duplikasi di Pohon Silsilah...',
+        background: '#1a1d29',
+        color: '#fff',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+
+      google.script.run
+        .withSuccessHandler(function(response) {
+          Swal.fire({ 
+            icon: 'success', 
+            title: 'Integritas Berhasil!', 
+            text: response.message, 
+            background: '#1a1d29', color: '#fff', confirmButtonColor: '#06b6d4' 
+          });
+          document.getElementById('formSilsilah').reset();
+          loadDashboardStats(); // Refresh angka di dashboard UI
+        })
+        .withFailureHandler(function(error) {
+          // Tangkap error dari backend jika ada duplikasi/anomali
+          Swal.fire({ 
+            icon: 'error', 
+            title: 'Sistem Menolak Input', 
+            text: error.message, 
+            background: '#1a1d29', color: '#fff', confirmButtonColor: '#ef4444' 
+          });
+        })
+        .submitSilsilah(payload);
+    }
+  </script>
+</body>
+</html>
